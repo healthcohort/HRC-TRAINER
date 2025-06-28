@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -30,11 +29,48 @@
             border: 3px solid #00b3b3;
         }
 
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 3px solid #00b3b3;
+        }
+
         h1 {
             color: #020203;
             font-weight: bold;
             margin-bottom: 25px;
             font-size: 24px;
+        }
+
+        .login-form {
+            margin-top: 20px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #00b3b3;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #d1006f;
+        }
+
+        .error-message {
+            color: #d1006f;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
         }
 
         .assessment {
@@ -182,8 +218,12 @@
         .positive { color: #00b3b3; }
         .neutral { color: #2c2c2c; }
 
+        .hidden {
+            display: none;
+        }
+
         @media (max-width: 600px) {
-            .container {
+            .container, .login-container {
                 padding: 20px;
                 margin: 10px;
             }
@@ -206,7 +246,19 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <h1>🔒 HRV-Atemtrainer</h1>
+        <p style="color: #2c2c2c; margin-bottom: 20px;">Bitte geben Sie das Passwort ein:</p>
+        <div class="login-form">
+            <input type="password" id="passwordInput" class="login-input" placeholder="Passwort eingeben" onkeypress="checkEnter(event)">
+            <button class="btn" onclick="checkPassword()">Einloggen</button>
+            <div id="errorMessage" class="error-message">Falsches Passwort. Bitte versuchen Sie es erneut.</div>
+        </div>
+    </div>
+
+    <!-- Main App (hidden initially) -->
+    <div id="mainApp" class="container hidden">
         <h1>🫁 HRV-Atemtrainer</h1>
         
         <div class="assessment" id="beforeAssessment">
@@ -272,6 +324,27 @@
     </div>
 
     <script>
+        // Password protection
+        const correctPassword = "hrv-drsusanne";
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput').value;
+            if (input === correctPassword) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').classList.remove('hidden');
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        function checkEnter(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        }
+
+        // Breathing app functionality
         var isRunning = false;
         var breathCount = 0;
         var currentPhase = 'inhale';
